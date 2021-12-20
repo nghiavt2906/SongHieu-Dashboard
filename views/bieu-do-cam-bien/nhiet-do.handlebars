@@ -1,0 +1,75 @@
+<div class="content">
+	<div class="container-fluid">
+		<ul class="nav nav-pills nav-pills-icons" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" href="#ndbt" role="tab" data-toggle="tab">
+					Nhiệt Độ Bê Tông
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#nddv" role="tab" data-toggle="tab">
+					Nhiệt Độ Dây Văng
+				</a>
+			</li>
+		</ul>
+
+		<div class="tab-content tab-space">
+			<div class="tab-pane active" id="ndbt">
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Cảm biến:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											{{#each ndbtLabels}}
+												<li class="nav-item" id="nav-item-{{this}}">
+													<a class={{#ifeq this 'TC1'}}"nav-link active show"{{else}}"nav-link"{{/ifeq}} href="#{{this}}" data-toggle="tab">
+														<i class="material-icons">sensors</i> {{this}}
+													</a>
+												</li>
+											{{/each}}
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="card-body">
+								<div id="ndbt-line-chart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="nddv">
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Cảm biến:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											{{#each nddvLabels}}
+												<li class="nav-item" id="nav-item-{{this}}">
+													<a class={{#ifeq this 'TS1'}}"nav-link active show"{{else}}"nav-link"{{/ifeq}} href="#{{this}}" data-toggle="tab">
+														<i class="material-icons">sensors</i> {{this}}
+													</a>
+												</li>
+											{{/each}}
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div id="nddv-line-chart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

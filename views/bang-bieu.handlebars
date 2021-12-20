@@ -1,0 +1,48 @@
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title">Bảng Biểu</h4>
+            <p class="card-category">Thông Số Tổng Quan Các Cảm Biến</p>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead class="text-primary">
+                  <tr>
+                    <th>STT</th>
+                    <th>Ký hiệu</th>
+                    <th>Loại cảm biến</th>
+                    <th>Vị trí lắp đặt</th>
+                    <th>Đơn vị đo</th>
+                    <th>Giá trị hiện tại</th>
+                    <th>Giới hạn trên</th>
+                    <th>Giới hạn dưới</th>
+                    <th>Trạng Thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each sensors}}
+                    <tr>
+                      <td>{{this.IDCambien}}</td>
+                      <td>{{this.Kyhieu}}</td>
+                      <td>{{this.Loaicambien}}</td>
+                      <td>{{this.Vitrilapdat}}</td>
+                      <td>{{this.Donvido}}</td>
+                      <td>0.000</td>
+                      <td>{{this.Gioihantren}}</td>
+                      <td>{{this.Gioihanduoi}}</td>
+                      <td>Bình thường</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

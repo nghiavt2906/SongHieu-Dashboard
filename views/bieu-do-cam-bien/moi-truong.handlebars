@@ -1,0 +1,108 @@
+<div class="content">
+	<div class="container-fluid">
+		<ul class="nav nav-pills nav-pills-icons" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" href="#nddakk" role="tab" data-toggle="tab">
+					Nhiệt Độ, Độ Ẩm Không Khí
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#lm" role="tab" data-toggle="tab">
+					Lượng Mưa
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#gio" role="tab" data-toggle="tab">
+					Gió
+				</a>
+			</li>
+		</ul>
+
+		<div class="tab-content tab-space">
+			<div class="tab-pane active" id="nddakk">
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Cảm biến:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											{{#each nddakkLabels}}
+												<li class="nav-item" id="nav-item-{{this}}">
+													<a class={{#ifeq this 'AT&RH'}}"nav-link active show"{{else}}"nav-link"{{/ifeq}} href="#{{this}}" data-toggle="tab">
+														<i class="material-icons">sensors</i> {{this}}
+													</a>
+												</li>
+											{{/each}}
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="card-body">
+								<div id="nddakk-line-chart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="lm">
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Cảm biến:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											{{#each lmLabels}}
+												<li class="nav-item" id="nav-item-{{this}}">
+													<a class={{#ifeq this 'RG'}}"nav-link active show"{{else}}"nav-link"{{/ifeq}} href="#{{this}}" data-toggle="tab">
+														<i class="material-icons">sensors</i> {{this}}
+													</a>
+												</li>
+											{{/each}}
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div id="lm-line-chart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="gio">
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-header card-header-tabs card-header-primary">
+								<div class="nav-tabs-navigation">
+									<div class="nav-tabs-wrapper">
+										<span class="nav-tabs-title">Cảm biến:</span>
+										<ul class="nav nav-tabs" data-tabs="tabs">
+											{{#each gioLabels}}
+												<li class="nav-item" id="nav-item-{{this}}">
+													<a class={{#ifeq this 'AM'}}"nav-link active show"{{else}}"nav-link"{{/ifeq}} href="#{{this}}" data-toggle="tab">
+														<i class="material-icons">sensors</i> {{this}}
+													</a>
+												</li>
+											{{/each}}
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div id="gio-line-chart"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
