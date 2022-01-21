@@ -1,7 +1,7 @@
 const config = {
 	user: 'songhieu',
 	password: 'Abc123#@!',
-	server: '119.82.135.166',
+	server: '203.205.6.12',
 	// server: 'localhost',
 	port: 1433,
 	database: 'SongHieu',

@@ -156,6 +156,12 @@ const main = async () => {
 		setInterval(async () => {
 			const latestSensorRecords = await getSensors()
 
+			const dataloggerInfo = await (await fetch('/bang-bieu/datalogger-info')).json()
+
+			document.getElementById("cr6-status").innerText = dataloggerInfo.status
+			document.getElementById("cr6-status").style.color = dataloggerInfo.isConnected ? "#238636" : "red"
+			document.getElementById("latest-timestamp").innerText = dataloggerInfo.latestTimestamp
+
 			for (const sensorRecord of latestSensorRecords) {
 				if (sensorRecord.currentValue === undefined) sensorRecord.currentValue = null
 				document.getElementById(`${sensorRecord.Kyhieu}-current-value`).innerText = sensorRecord.currentValue
