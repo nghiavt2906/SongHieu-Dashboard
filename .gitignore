@@ -1,5 +1,4 @@
 .env
-dbconfig.js
 test-dbconfig.js
 
 node_modules/
