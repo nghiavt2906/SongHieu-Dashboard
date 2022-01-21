@@ -42,9 +42,7 @@ router.get('/datalogger-info', async (req, res) => {
 	const latestTimestamp = lastestStaticSensorsRecord.Timestamp
 	const currentTimestamp = new Date()
 	currentTimestamp.setHours(currentTimestamp.getHours() + 7)
-
-	const diffMs = (currentTimestamp - latestTimestamp);
-	const diffMins = ((diffMs % 86400000) % 3600000) / 60000;
+	const diffMins = diffMinutes(currentTimestamp, latestTimestamp)
 
 	const data = {
 		latestTimestamp: new Date(latestTimestamp).toLocaleString("en-GB", { timeZone: 'UTC' }).replace(/,/g, ''),
@@ -53,5 +51,11 @@ router.get('/datalogger-info', async (req, res) => {
 	}
 	res.json(data)
 })
+
+function diffMinutes(dt2, dt1) {
+	let diff = (dt2.getTime() - dt1.getTime()) / 1000;
+	diff /= 60;
+	return Math.abs(Math.round(diff));
+}
 
 module.exports = router
