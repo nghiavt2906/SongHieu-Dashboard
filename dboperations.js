@@ -1,15 +1,48 @@
-// const config = require('./dbconfig');
-const config = require('./test-dbconfig')
+const config = require('./dbconfig')
 const sql = require('mssql');
 
 const getRecordsBySensorId = async (sensorId, num) => {
     try {
         let pool = await sql.connect(config);
+        const sensors = (await pool.request().query('SELECT * FROM Table_General')).recordsets[0]
+        const sensorType = sensors.find(sensor => sensor.Kyhieu.trim() === sensorId).Loaicambien
+
+        let tableName;
+
+        switch (sensorType) {
+            case 'Ứng suất':
+            case 'Nhiệt độ':
+                tableName = 'StaticSensorRESULT_Day'
+                break;
+            case 'Lực':
+                tableName = 'Tension'
+                break;
+            default:
+                console.log(`Error: can't find sensor type ${sensorType} in db!`)
+                return []
+        }
+
         let result = await pool.request()
-            // .query(`SELECT TOP ${num} ID, Time, ${sensorId} FROM GD2_UNGSUAT ORDER BY Time DESC`);
-            .query(`SELECT TOP ${num} Record, Timestamp, ${sensorId} FROM StaticSensorRESULT_Day ORDER BY Timestamp DESC`);
+            .query(`SELECT TOP ${num} Timestamp, ${sensorId} FROM ${tableName} ORDER BY Timestamp DESC`);
 
         return result.recordsets[0];
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+const getLastestRecord = async () => {
+    try {
+        let pool = await sql.connect(config);
+        let result = {
+            ...(await pool.request()
+                .query(`SELECT TOP 1 * FROM StaticSensorRESULT_Day ORDER BY Timestamp DESC`)).recordsets[0][0],
+            ...(await pool.request()
+                .query(`SELECT TOP 1 * FROM Tension ORDER BY Timestamp DESC`)).recordsets[0][0],
+        }
+
+        return result;
     }
     catch (error) {
         console.log(error);
@@ -28,7 +61,67 @@ const getGeneralTable = async () => {
     }
 }
 
+const getRecordsByDay = async day => {
+    const startOfDay = `'${day} 00:00:00'`
+    const endOfDay = `'${day} 23:59:59'`
+
+    try {
+        let pool = await sql.connect(config)
+        let result = await pool.request()
+            .query(`SELECT * FROM StaticSensorRESULT_Day A
+                    LEFT JOIN Tension B
+                    ON A.Timestamp = B.Timestamp
+                    WHERE A.Timestamp BETWEEN ${startOfDay} AND ${endOfDay} 
+                    ORDER BY A.Timestamp DESC`)
+        return result.recordsets[0]
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+const getRecordsByMonth = async yearAndMonth => {
+    const [year, month] = yearAndMonth.split('-')
+
+    const startOfMonth = `'${yearAndMonth}-01'`
+    const endOfMonth = `'${yearAndMonth}-${(new Date(year, month, 0)).getDate()} 23:59:59'`
+
+    try {
+        let pool = await sql.connect(config)
+        let result = await pool.request()
+            .query(`SELECT * FROM StaticSensorRESULT_Day A
+                    LEFT JOIN Tension B
+                    ON A.Timestamp = B.Timestamp
+                    WHERE A.Timestamp BETWEEN ${startOfMonth} AND ${endOfMonth} 
+                    ORDER BY A.Timestamp DESC`)
+        return result.recordsets[0]
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
+const getRecordsByCustomRange = async (fromDate, toDate) => {
+    try {
+        let pool = await sql.connect(config)
+        let result = await pool.request()
+            .query(`SELECT * FROM StaticSensorRESULT_Day A
+                    LEFT JOIN Tension B
+                    ON A.Timestamp = B.Timestamp
+                    WHERE A.Timestamp BETWEEN '${fromDate} 00:00:00' AND '${toDate} 23:59:59'
+                    ORDER BY A.Timestamp DESC`)
+        return result.recordsets[0]
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
 module.exports = {
     getRecordsBySensorId,
-    getGeneralTable
+    getLastestRecord,
+    getGeneralTable,
+    getRecordsByDay,
+    getRecordsByMonth,
+    getRecordsByCustomRange
 }

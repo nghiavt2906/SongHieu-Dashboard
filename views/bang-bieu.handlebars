@@ -4,6 +4,17 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header card-header-primary">
+            <h4 class="card-title">CR6 datalogger</h4>
+            <p class="card-category">Trạng thái: <span id="cr6-status" style="color:{{#ifeq dataloggerInfo.isConnected true}}#238636{{else}}red{{/ifeq}};font-weight:600">{{dataloggerInfo.status}}</span></p>
+          </div>
+          <div class="card-body">
+            Dữ liệu truyền về mới nhất vào lúc: <span id="latest-timestamp" style="font-weight:400;">{{dataloggerInfo.latestTimestamp}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-primary">
             <h4 class="card-title">Bảng Biểu</h4>
             <p class="card-category">Thông Số Tổng Quan Các Cảm Biến</p>
           </div>
@@ -31,10 +42,18 @@
                       <td>{{this.Loaicambien}}</td>
                       <td>{{this.Vitrilapdat}}</td>
                       <td>{{this.Donvido}}</td>
-                      <td>0.000</td>
+                      <td id='{{this.Kyhieu}}-current-value'>{{this.currentValue}}</td>
                       <td>{{this.Gioihantren}}</td>
                       <td>{{this.Gioihanduoi}}</td>
-                      <td>Bình thường</td>
+                      {{#ifeq this.currentValue null}}
+                        <td id='{{this.Kyhieu}}-status' style="color:#777;font-weight:bold">Không hoạt động</td>
+                      {{else}} {{#ifeq this.currentValue undefined}}
+                        <td id='{{this.Kyhieu}}-status' style="color:#777;font-weight:bold">Không hoạt động</td>
+                      {{else}} {{#ifNotInRange this.currentValue this.Gioihanduoi this.Gioihantren}}
+                        <td id='{{this.Kyhieu}}-status' style="color:red;font-weight:bold">Cảnh báo!!!</td>
+                      {{else}}
+                        <td id='{{this.Kyhieu}}-status' style="color:#238636;font-weight:bold">Bình thường</td>
+                      {{/ifNotInRange}} {{/ifeq}} {{/ifeq}}
                     </tr>
                   {{/each}}
                 </tbody>

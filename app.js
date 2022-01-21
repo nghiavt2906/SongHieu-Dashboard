@@ -2,8 +2,8 @@ const express = require('express')
 const path = require('path')
 const exphbs = require("express-handlebars")
 
-require('dotenv').config()
-const port = process.env.PORT || 3000
+// require('dotenv').config()
+const port = process.env.PORT || 3002
 
 const app = express()
 
@@ -22,6 +22,17 @@ app.engine("handlebars", exphbs.engine({
 			}
 
 			return options.inverse(this);
+		},
+		ifNotInRange: function (val, min, max, options) {
+			if ((min === null && max === null) ||
+				(min === undefined && max === undefined))
+				return options.inverse(this)
+
+			if ((max !== null && val > max) || (min !== null && val < min)) {
+				return options.fn(this)
+			}
+
+			return options.inverse(this)
 		}
 	}
 }));
