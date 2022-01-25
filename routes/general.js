@@ -24,9 +24,7 @@ router.get('/', async (req, res) => {
 	const latestTimestamp = lastestStaticSensorsRecord.Timestamp
 	const currentTimestamp = new Date()
 	currentTimestamp.setHours(currentTimestamp.getHours() + 7)
-
-	const diffMs = (currentTimestamp - latestTimestamp);
-	const diffMins = ((diffMs % 86400000) % 3600000) / 60000;
+	const diffMins = diffMinutes(currentTimestamp, latestTimestamp)
 
 	const dataloggerInfo = {
 		latestTimestamp: new Date(latestTimestamp).toLocaleString("en-GB", { timeZone: 'UTC' }).replace(/,/g, ''),
