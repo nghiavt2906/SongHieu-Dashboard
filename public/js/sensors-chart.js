@@ -2,7 +2,7 @@ function getRandomArbitrary(min, max) {
 	return Math.random() * (max - min) + min;
 }
 
-const createLineChart = (chartId, type, title, yAxis_title, valueSuffix, sensorId) => {
+const createLineChart = (chartId, type, title, yAxis_title, valueSuffix, sensorId, maxLatestRecordsNum=35000, appendRateBySecs=15) => {
 	return Highcharts.chart(chartId, {
 		chart: {
 			type: type,
@@ -13,7 +13,7 @@ const createLineChart = (chartId, type, title, yAxis_title, valueSuffix, sensorI
 					this.showLoading('')
 					let series = this.series[0]
 
-					const res = await fetch(`/bieu-do-cam-bien/records/${sensorId}?num=350`)
+					const res = await fetch(`/bieu-do-cam-bien/records/${sensorId}?num=${maxLatestRecordsNum}`)
 					const records = await res.json()
 					let currentTimestamp = records[0].Timestamp
 					const data = []
@@ -44,7 +44,7 @@ const createLineChart = (chartId, type, title, yAxis_title, valueSuffix, sensorI
 							], true, true)
 							currentTimestamp = record.Timestamp
 						}
-					}, 15 * 1000);
+					}, appendRateBySecs * 1000);
 				}
 			}
 		},
@@ -66,6 +66,9 @@ const createLineChart = (chartId, type, title, yAxis_title, valueSuffix, sensorI
 				minute: '%d-%m-%Y<br/>%H:%M',
 				hour: '%d-%m-%Y<br/>%H:%M',
 				day: '%d-%m-%Y'
+			},
+			labels: {
+				padding: 7
 			}
 		},
 		yAxis: {
@@ -148,6 +151,8 @@ const main = async () => {
 			case 'nhiet-do':
 				renderTemperatureCharts();
 				break;
+			case 'gia-toc':
+				renderVibraCharts();
 			default:
 				break;
 		}
@@ -396,6 +401,16 @@ const renderTemperatureCharts = () => {
 		ndbtSensor.Donvido,
 		'TC1'
 	)
+	
+	let nddvSensor = sensors.find(sensor => sensor.Kyhieu === 'TS1')
+	let nddvChart = createLineChart(
+		'nddv-line-chart',
+		'spline',
+		nddvSensor.Vitrilapdat,
+		nddvSensor.Loaicambien,
+		nddvSensor.Donvido,
+		'TS1'
+	)
 
 	for (let idx = 1; idx <= 24; idx++) {
 		const navItem = document.getElementById(`nav-item-TC${idx}`)
@@ -410,6 +425,92 @@ const renderTemperatureCharts = () => {
 					ndbtSensor.Loaicambien,
 					ndbtSensor.Donvido,
 					`TC${idx}`
+				)
+			}
+		})
+	}
+	
+	for (let idx = 1; idx <= 2; idx++) {
+		const navItem = document.getElementById(`nav-item-TS${idx}`)
+		navItem.addEventListener('click', e => {
+			if (navItem.children[0].classList.length === 1) {
+				let nddvSensor = sensors.find(sensor => sensor.Kyhieu === `TS${idx}`)
+				nddvChart.destroy()
+				nddvChart = createLineChart(
+					'nddv-line-chart',
+					'spline',
+					nddvSensor.Vitrilapdat,
+					nddvSensor.Loaicambien,
+					nddvSensor.Donvido,
+					`TS${idx}`
+				)
+			}
+		})
+	}
+}
+
+const renderVibraCharts = () => {
+	let gt1pSensor = sensors.find(sensor => sensor.Kyhieu === 'AC1D-1')
+	let gt1pChart = createLineChart(
+		'gt1p-line-chart',
+		'spline',
+		gt1pSensor.Vitrilapdat,
+		gt1pSensor.Loaicambien,
+		gt1pSensor.Donvido,
+		'AC1D-1',
+		3600,
+		1
+	)
+
+	let gt2pSensor = sensors.find(sensor => sensor.Kyhieu === 'AC2D-1')
+	let gt2pChart = createLineChart(
+		'gt2p-line-chart',
+		'spline',
+		gt2pSensor.Vitrilapdat,
+		gt2pSensor.Loaicambien,
+		gt2pSensor.Donvido,
+		'AC2D-1',
+		3600,
+		1
+	)
+
+	for (let idx = 1; idx <= 4; idx++) {
+		const navItem = document.getElementById(`nav-item-AC1D-${idx}`)
+
+		navItem.addEventListener('click', e => {
+			if (navItem.children[0].classList.length === 1) {
+				let gt1pSensor = sensors.find(sensor => sensor.Kyhieu === `AC1D-${idx}`)
+				gt1pChart.destroy()
+				gt1pChart = createLineChart(
+					'gt1p-line-chart',
+					'spline',
+					gt1pSensor.Vitrilapdat,
+					gt1pSensor.Loaicambien,
+					gt1pSensor.Donvido,
+					`AC1D-${idx}`,
+					3600,
+					1
+				)
+			}
+		})
+	}
+	
+	for (let idx = 1; idx <= 2; idx++) {
+		const navItem = document.getElementById(`nav-item-AC2D-${idx}`)
+
+		navItem.addEventListener('click', e => {
+			if (navItem.children[0].classList.length === 1) {
+				let gt2pSensor = sensors.find(sensor => sensor.Kyhieu === `AC2D-${idx}`)
+				gt2pChart.destroy()
+				gt2pChart = createLineChart(
+					'gt2p-line-chart',
+					'spline',
+					gt2pSensor.Vitrilapdat,
+					gt2pSensor.Loaicambien,
+					gt2pSensor.Donvido,
+					`AC2D-${idx}`,
+					3600,
+					1
 				)
 			}
 		})

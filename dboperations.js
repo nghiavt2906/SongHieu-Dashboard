@@ -8,6 +8,7 @@ const getRecordsBySensorId = async (sensorId, num) => {
         const sensorType = sensors.find(sensor => sensor.Kyhieu.trim() === sensorId).Loaicambien
 
         let tableName;
+		let sensorSqlLabel = '';
 
         switch (sensorType) {
             case 'Ứng suất':
@@ -17,13 +18,22 @@ const getRecordsBySensorId = async (sensorId, num) => {
             case 'Lực':
                 tableName = 'Tension'
                 break;
+			case 'Gia tốc':
+				tableName = 'VibraSensor_Day'
+				sensorSqlLabel = ` AS "${sensorId}"`
+				const [sensorLabel, sensorIdx] = sensorId.split('-')
+				if (sensorLabel === 'AC1D')
+					sensorId = `Gtmax${sensorIdx}`
+				else
+					sensorId = `Gtmax${parseInt(sensorIdx)+3}`
+				break;
             default:
                 console.log(`Error: can't find sensor type ${sensorType} in db!`)
                 return []
         }
-
+		
         let result = await pool.request()
-            .query(`SELECT TOP ${num} Timestamp, ${sensorId} FROM ${tableName} ORDER BY Timestamp DESC`);
+            .query(`SELECT TOP ${num} Timestamp, ${sensorId}${sensorSqlLabel} FROM ${tableName} ORDER BY Timestamp DESC`);
 
         return result.recordsets[0];
     }
@@ -35,12 +45,25 @@ const getRecordsBySensorId = async (sensorId, num) => {
 const getLastestRecord = async () => {
     try {
         let pool = await sql.connect(config);
+		const staticSensors = (await pool.request()
+                .query(`SELECT TOP 1 * FROM StaticSensorRESULT_Day ORDER BY Timestamp DESC`)).recordsets[0][0]
+		const tensions = (await pool.request()
+                .query(`SELECT TOP 1 * FROM Tension ORDER BY Timestamp DESC`)).recordsets[0][0]
+		const vibraSensors = (await pool.request()
+                .query(`SELECT TOP 1 * FROM VibraSensor_Day ORDER BY Timestamp DESC`)).recordsets[0][0]
+		let timestamps = [staticSensors.Timestamp, tensions.Timestamp]
+		timestamps.sort()
         let result = {
-            ...(await pool.request()
-                .query(`SELECT TOP 1 * FROM StaticSensorRESULT_Day ORDER BY Timestamp DESC`)).recordsets[0][0],
-            ...(await pool.request()
-                .query(`SELECT TOP 1 * FROM Tension ORDER BY Timestamp DESC`)).recordsets[0][0],
+            ...staticSensors,
+            ...tensions,
+			...vibraSensors,
+			Timestamp: timestamps[0]
         }
+		
+		result['AC1D-1'] = result['Gtmax1']
+		result['AC1D-2'] = result['Gtmax2']
+		//result['AC1D-3'] = result['Gtmax3']
+		//result['AC1D-4'] = result['Gtmax4']
 
         return result;
     }
