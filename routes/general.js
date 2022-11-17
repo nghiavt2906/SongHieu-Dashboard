@@ -8,7 +8,10 @@ router.get('/', async (req, res) => {
 	const sensors = await dboperations.getGeneralTable()
 	const lastestStaticSensorsRecord = (await dboperations.getLastestRecord())
 
+	let i = 0;
 	for (const sensor of sensors) {
+		i +=1 
+		sensor.IDCambien = i;
 		sensor.Kyhieu = sensor.Kyhieu ? sensor.Kyhieu.trim() : null
 		sensor.Sohieucambien = sensor.Sohieucambien ? sensor.Sohieucambien.trim() : null
 		sensor.Loaicambien = sensor.Loaicambien ? sensor.Loaicambien.trim() : null

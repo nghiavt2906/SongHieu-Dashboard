@@ -51,12 +51,16 @@ const getLastestRecord = async () => {
                 .query(`SELECT TOP 1 * FROM Tension ORDER BY Timestamp DESC`)).recordsets[0][0]
 		const vibraSensors = (await pool.request()
                 .query(`SELECT TOP 1 * FROM VibraSensor_Day ORDER BY Timestamp DESC`)).recordsets[0][0]
+		const windSensors = (await pool.request()
+                .query(`SELECT TOP 1 * FROM WS ORDER BY Timestamp DESC`)).recordsets[0][0]
+				
 		let timestamps = [staticSensors.Timestamp, tensions.Timestamp]
 		timestamps.sort()
         let result = {
             ...staticSensors,
             ...tensions,
 			...vibraSensors,
+			...windSensors,
 			Timestamp: timestamps[0]
         }
 		
