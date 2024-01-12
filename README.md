@@ -4,7 +4,7 @@ A web application for recording and displaying sensors data records for construc
 # 2. Monitoring Node
 ![image](https://github.com/nghiavt2906/SongHieu-Dashboard/assets/52102753/282ad8c4-a306-47b9-8736-f1b9471cef15)
 
-![image](https://github.com/nghiavt2906/SongHieu-Dashboard/assets/52102753/f02fdd7b-3894-4e18-9b19-a67f34d9b00d)
+![image](https://github.com/nghiavt2906/SongHieu-Dashboard/assets/52102753/a7a1bfe0-3eaf-4dcd-9643-1bd6de0d1bbd)
 
 # 3. Web Application
 ## 3.1 Homepage
